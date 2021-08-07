@@ -6,7 +6,7 @@ import { sortBy } from 'lodash';
 import produce from 'immer';
 
 import { ModuleWithColor, TombstoneModule } from 'types/views';
-import { ColorIndex, SimplifiedLesson } from 'types/timetables';
+import { ColorIndex, Lesson, SimplifiedLesson } from 'types/timetables';
 import { ModuleCode, Semester } from 'types/modules';
 import { State as StoreState } from 'types/state';
 import { ModuleTableOrder } from 'types/reducers';
@@ -26,6 +26,7 @@ import elements from 'views/elements';
 import Tooltip from 'views/components/Tooltip';
 import config from 'config';
 
+import ModuleHidder from 'views/components/ModuleHidder';
 import styles from './TimetableModulesTable.scss';
 import ModuleTombstone from './ModuleTombstone';
 import { moduleOrders } from './ModulesTableFooter';
@@ -52,6 +53,7 @@ export type Props = {
   ) => void;
   onRemoveModule: (moduleCode: ModuleCode) => void;
   resetTombstone: () => void;
+  isLessonHiddenInTimetable: (lesson: Lesson | SimplifiedLesson) => boolean;
 };
 
 export const TimetableModulesTableComponent: React.FC<Props> = (props) => {
@@ -102,9 +104,25 @@ export const TimetableModulesTableComponent: React.FC<Props> = (props) => {
               )}
             </button>
           </Tooltip>
+          <ModuleHidder
+            moduleCode={module.moduleCode}
+            semester={semester}
+            lessons={getLessons(module, semester)}
+            toggleHideOption={toggleHideOption}
+          />
         </div>
       </div>
     );
+  };
+
+  const toggleHideOption = (lesson: SimplifiedLesson) => {
+    const isHidden: boolean = props.isLessonHiddenInTimetable(lesson);
+
+    if (isHidden) {
+      props.showLessonInTimetable(semester, lesson.moduleCode, [lesson]);
+    } else {
+      props.hideLessonInTimetable(semester, lesson.moduleCode, [lesson]);
+    }
   };
 
   const renderModule = (module: ModuleWithColor) => {

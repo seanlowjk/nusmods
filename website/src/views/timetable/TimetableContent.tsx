@@ -160,13 +160,13 @@ class TimetableContent extends React.Component<Props, State> {
   isHiddenInTimetable = (moduleCode: ModuleCode) =>
     this.props.hiddenInTimetable.map((lesson) => lesson.moduleCode).includes(moduleCode);
 
-  isModuleHiddenInTimetable = (moduleCode: ModuleCode) => 
+  isModuleHiddenInTimetable = (moduleCode: ModuleCode) =>
     !timetableLessonsArray(this.props.timetableWithLessons)
       .filter((lesson) => !this.isLessonHiddenInTimetable(lesson))
       .map((lesson) => lesson.moduleCode)
       .includes(moduleCode);
 
-  isLessonHiddenInTimetable = (lesson: Lesson) =>
+  isLessonHiddenInTimetable = (lesson: Lesson | SimplifiedLesson) =>
     this.props.hiddenInTimetable.findIndex(
       (simplifiedLesson: SimplifiedLesson) =>
         lesson.lessonType === simplifiedLesson.lessonType &&
@@ -239,6 +239,7 @@ class TimetableContent extends React.Component<Props, State> {
       readOnly={this.props.readOnly}
       tombstone={tombstone}
       resetTombstone={this.resetTombstone}
+      isLessonHiddenInTimetable={this.isLessonHiddenInTimetable}
     />
   );
 
