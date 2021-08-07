@@ -39,12 +39,12 @@ const ModuleHidder = memo<Props>((props) => {
       .map((lesson) => props.isLessonHiddenInTimetable(lesson))
       .reduce((x, y) => x || y);
 
-  const toggleLessonHide = (code: ModuleCode, simplifiedLessons: SimplifiedLesson[]) => {
+  const toggleLessonHide = (simplifiedLessons: SimplifiedLesson[]) => {
     if (simplifiedLessons.length === 0) {
       return;
     }
 
-    props.toggleLessonHide(code, simplifiedLessons, shouldHide(simplifiedLessons));
+    props.toggleLessonHide(moduleCode, simplifiedLessons, shouldHide(simplifiedLessons));
   };
 
   const getHideAllLessonsLabel = `${
@@ -71,13 +71,17 @@ const ModuleHidder = memo<Props>((props) => {
         className={classnames('dropdown-menu', styles.dropdownMenu, { show: isOpen })}
         {...getMenuProps()}
       >
-        <div className="btn-group-vertical">
+        <div className={classnames("btn-group-vertical", styles.hideBtns)}>
           <Tooltip content={getHideAllLessonsLabel} touch="hold">
             <button
               className={classnames('btn btn-outline-secondary btn-svg', styles.moduleHide)}
               style={{ textDecoration: shouldHide(lessons) ? 'line-through' : 'none' }}
               type="button"
               {...getItemProps({ item: lessons })}
+              onClick={() => {
+                isOpen = true; 
+                toggleLessonHide(lessons);
+              }}
               key={moduleCode}
             >
               ALL
@@ -93,6 +97,10 @@ const ModuleHidder = memo<Props>((props) => {
                 type="button"
                 {...getItemProps({ item: [lesson] })}
                 key={`${lesson.moduleCode} ${lesson.lessonType}`}
+                onClick={() => {
+                  isOpen = true; 
+                  toggleLessonHide([lesson])
+                }}
               >
                 {LESSON_TYPE_ABBREV[lesson.lessonType]}
               </button>
@@ -104,11 +112,7 @@ const ModuleHidder = memo<Props>((props) => {
   );
 
   return (
-    <Downshift
-      onChange={(toggleLessons) =>
-        toggleLessons !== null && toggleLessonHide(moduleCode, toggleLessons)
-      }
-    >
+    <Downshift>
       {renderLessonHider}
     </Downshift>
   );

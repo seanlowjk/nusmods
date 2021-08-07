@@ -1,16 +1,6 @@
 @import '~styles/utils/modules-entry';
 
 .moduleHidder {
-  .moduleHide {
-    flex: 0 1 auto;
-    text-transform: uppercase; 
-
-    @include media-breakpoint-up(md) {
-      padding: 0.5rem;
-      border: 0;
-    }
-  }
-
   .moduleAction {
     flex: 0 1 auto;
     border-left: 0;
@@ -32,7 +22,23 @@
     width: 5rem;
     min-width: 5rem; 
     text-align: center; 
-  
+
+    .hideBtns {
+      width: inherit;
+      padding: 0; 
+
+      .moduleHide {
+        flex: 0 1 auto;
+        text-transform: uppercase; 
+        width: inherit; 
+    
+        @include media-breakpoint-up(md) {
+          padding: 0.5rem;
+          border: 0;
+        }
+      }
+    }
+    
     svg {
       margin-right: 0.2rem;
       vertical-align: middle;
