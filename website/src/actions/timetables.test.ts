@@ -120,20 +120,28 @@ describe('hide/show timetable modules', () => {
 
   test('should dispatch a module code for hiding', () => {
     const moduleCode: ModuleCode = 'CS1010';
-    const lessons: SimplifiedLesson[] = [{
-      lessonType: "Lecture", 
-      moduleCode: "CS1010", 
-    }];
-    expect(actions.hideLessonInTimetable(semester, moduleCode, lessons)).toMatchSnapshot();
+    const simplifiedLessons: SimplifiedLesson[] = [
+      {
+        lessonType: 'Lecture',
+        moduleCode: 'CS1010',
+      },
+    ];
+    expect(
+      actions.hideLessonInTimetable(semester, moduleCode, simplifiedLessons),
+    ).toMatchSnapshot();
   });
 
   test('should dispatch a module code for showing', () => {
     const moduleCode: ModuleCode = 'CS1020';
-    const lessons: SimplifiedLesson[] = [{
-      lessonType: "Lecture", 
-      moduleCode: "CS1020", 
-    }];
-    expect(actions.showLessonInTimetable(semester, moduleCode, lessons)).toMatchSnapshot();
+    const simplifiedLessons: SimplifiedLesson[] = [
+      {
+        lessonType: 'Lecture',
+        moduleCode: 'CS1020',
+      },
+    ];
+    expect(
+      actions.showLessonInTimetable(semester, moduleCode, simplifiedLessons),
+    ).toMatchSnapshot();
   });
 });
 
