@@ -1,6 +1,12 @@
 import { each, flatMap } from 'lodash';
 
-import type { Lesson, ColorIndex, ModuleLessonConfig, SemTimetableConfig } from 'types/timetables';
+import type {
+  Lesson,
+  ColorIndex,
+  ModuleLessonConfig,
+  SemTimetableConfig,
+  SimplifiedLesson,
+} from 'types/timetables';
 import type { Dispatch, GetState } from 'types/redux';
 import type { ColorMapping } from 'types/reducers';
 import type { ClassNo, LessonType, Module, ModuleCode, Semester } from 'types/modules';
@@ -208,17 +214,27 @@ export function selectModuleColor(
 }
 
 export const HIDE_LESSON_IN_TIMETABLE = 'HIDE_LESSON_IN_TIMETABLE' as const;
-export function hideLessonInTimetable(semester: Semester, moduleCode: ModuleCode) {
+export function hideLessonInTimetable(
+  semester: Semester,
+  moduleCode: ModuleCode,
+  lessons: SimplifiedLesson[],
+) {
   return {
     type: HIDE_LESSON_IN_TIMETABLE,
-    payload: { moduleCode, semester },
+    payload: { moduleCode, semester, lessons },
   };
 }
 
 export const SHOW_LESSON_IN_TIMETABLE = 'SHOW_LESSON_IN_TIMETABLE' as const;
-export function showLessonInTimetable(semester: Semester, moduleCode: ModuleCode) {
+
+// Note: function to help show the lesson in the timetable view.
+export function showLessonInTimetable(
+  semester: Semester,
+  moduleCode: ModuleCode,
+  lessons: SimplifiedLesson[],
+) {
   return {
     type: SHOW_LESSON_IN_TIMETABLE,
-    payload: { moduleCode, semester },
+    payload: { moduleCode, semester, lessons },
   };
 }

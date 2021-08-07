@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import type {
+  LessonType,
   Module,
   ModuleCode,
   RawLesson,
@@ -11,7 +12,7 @@ import type {
 import config from 'config';
 import { NBSP, noBreak } from 'utils/react';
 import { format } from 'date-fns';
-import { Lesson } from 'types/timetables';
+import { Lesson, SimplifiedLesson } from 'types/timetables';
 import { toSingaporeTime } from './timify';
 
 // Look for strings that look like module codes - eg.
@@ -137,4 +138,24 @@ export function getYearsBetween(minYear: string, maxYear: string): string[] {
 
 export function isGraduateModule(module: { moduleCode: ModuleCode }): boolean {
   return Boolean(/[A-Z]+(5|6)\d{3}/i.test(module.moduleCode));
+}
+
+//  Gets the lesson types for the particular module given
+//  the particular semester.
+export function getLessons(module: Module, semester: Semester): SimplifiedLesson[] {
+  const semesterData: SemesterData | undefined = _.find(
+    module.semesterData,
+    (data) => data.semester === semester,
+  );
+
+  if (semesterData === undefined) {
+    return [];
+  }
+
+  return _.uniq(semesterData.timetable.map((lesson) => lesson.lessonType)).map(
+    (lessonType: LessonType) => ({
+      moduleCode: module.moduleCode,
+      lessonType,
+    }),
+  );
 }

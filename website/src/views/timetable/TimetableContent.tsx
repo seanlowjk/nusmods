@@ -11,6 +11,7 @@ import {
   ModifiableLesson,
   SemTimetableConfig,
   SemTimetableConfigWithLessons,
+  SimplifiedLesson,
   TimetableArrangement,
 } from 'types/timetables';
 
@@ -74,7 +75,7 @@ type Props = OwnProps & {
   activeLesson: Lesson | null;
   timetableOrientation: TimetableOrientation;
   showTitle: boolean;
-  hiddenInTimetable: ModuleCode[];
+  hiddenInTimetable: SimplifiedLesson[];
 
   // Actions
   addModule: (semester: Semester, moduleCode: ModuleCode) => void;
@@ -155,8 +156,22 @@ class TimetableContent extends React.Component<Props, State> {
     }
   };
 
+  // Note: Determines if a module should be hidden in timetable.
   isHiddenInTimetable = (moduleCode: ModuleCode) =>
-    this.props.hiddenInTimetable.includes(moduleCode);
+    this.props.hiddenInTimetable.map((lesson) => lesson.moduleCode).includes(moduleCode);
+
+  isModuleHiddenInTimetable = (moduleCode: ModuleCode) => 
+    !timetableLessonsArray(this.props.timetableWithLessons)
+      .filter((lesson) => !this.isLessonHiddenInTimetable(lesson))
+      .map((lesson) => lesson.moduleCode)
+      .includes(moduleCode);
+
+  isLessonHiddenInTimetable = (lesson: Lesson) =>
+    this.props.hiddenInTimetable.findIndex(
+      (simplifiedLesson: SimplifiedLesson) =>
+        lesson.lessonType === simplifiedLesson.lessonType &&
+        lesson.moduleCode === simplifiedLesson.moduleCode,
+    ) !== -1;
 
   modifyCell = (lesson: ModifiableLesson, position: ClientRect) => {
     if (lesson.isAvailable) {
@@ -203,10 +218,12 @@ class TimetableContent extends React.Component<Props, State> {
     return _.sortBy(modules, (module: Module) => getExamDate(module, this.props.semester));
   }
 
+  // Note: Converts Modules to Modules With Color, and whether
+  // it should be hidden from the timetable view.
   toModuleWithColor = (module: Module) => ({
     ...module,
     colorIndex: this.props.colors[module.moduleCode],
-    hiddenInTimetable: this.isHiddenInTimetable(module.moduleCode),
+    hiddenInTimetable: this.isModuleHiddenInTimetable(module.moduleCode),
   });
 
   renderModuleTable = (
@@ -281,9 +298,10 @@ class TimetableContent extends React.Component<Props, State> {
 
     const { showExamCalendar } = this.state;
 
+    // Note: Processing of timetable lessons, excluding hidden modules.
     let timetableLessons: Lesson[] = timetableLessonsArray(this.props.timetableWithLessons)
       // Do not process hidden modules
-      .filter((lesson) => !this.isHiddenInTimetable(lesson.moduleCode));
+      .filter((lesson) => !this.isLessonHiddenInTimetable(lesson));
 
     if (activeLesson) {
       const { moduleCode } = activeLesson;
@@ -372,7 +390,7 @@ class TimetableContent extends React.Component<Props, State> {
                 modules={addedModules.map((module) => ({
                   ...module,
                   colorIndex: this.props.colors[module.moduleCode],
-                  hiddenInTimetable: this.isHiddenInTimetable(module.moduleCode),
+                  hiddenInTimetable: this.isModuleHiddenInTimetable(module.moduleCode),
                 }))}
               />
             ) : (
@@ -438,7 +456,9 @@ function mapStateToProps(state: StoreState, ownProps: OwnProps) {
   const { semester, timetable } = ownProps;
   const { modules } = state.moduleBank;
   const timetableWithLessons = hydrateSemTimetableWithLessons(timetable, modules, semester);
-  const hiddenInTimetable = state.timetables.hidden[semester] || [];
+
+  // Note: Initial Deriviation of Modules Hidden In Timetable.
+  const hiddenInTimetable: SimplifiedLesson[] = state.timetables.hidden[semester] || [];
 
   return {
     semester,

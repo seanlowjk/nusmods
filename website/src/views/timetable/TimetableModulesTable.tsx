@@ -6,7 +6,7 @@ import { sortBy } from 'lodash';
 import produce from 'immer';
 
 import { ModuleWithColor, TombstoneModule } from 'types/views';
-import { ColorIndex } from 'types/timetables';
+import { ColorIndex, SimplifiedLesson } from 'types/timetables';
 import { ModuleCode, Semester } from 'types/modules';
 import { State as StoreState } from 'types/state';
 import { ModuleTableOrder } from 'types/reducers';
@@ -18,7 +18,7 @@ import {
   selectModuleColor,
   showLessonInTimetable,
 } from 'actions/timetables';
-import { getExamDate, getFormattedExamDate, renderMCs } from 'utils/modules';
+import { getExamDate, getFormattedExamDate, getLessons, renderMCs } from 'utils/modules';
 import { intersperse } from 'utils/array';
 import { BULLET_NBSP } from 'utils/react';
 import { modulePage } from 'views/routes/paths';
@@ -40,8 +40,16 @@ export type Props = {
 
   // Actions
   selectModuleColor: (semester: Semester, moduleCode: ModuleCode, colorIndex: ColorIndex) => void;
-  hideLessonInTimetable: (semester: Semester, moduleCode: ModuleCode) => void;
-  showLessonInTimetable: (semester: Semester, moduleCode: ModuleCode) => void;
+  hideLessonInTimetable: (
+    semester: Semester,
+    moduleCode: ModuleCode,
+    lessonTypes: SimplifiedLesson[],
+  ) => void;
+  showLessonInTimetable: (
+    semester: Semester,
+    moduleCode: ModuleCode,
+    lessonTypes: SimplifiedLesson[],
+  ) => void;
   onRemoveModule: (moduleCode: ModuleCode) => void;
   resetTombstone: () => void;
 };
@@ -70,11 +78,20 @@ export const TimetableModulesTableComponent: React.FC<Props> = (props) => {
               type="button"
               className={classnames('btn btn-outline-secondary btn-svg', styles.moduleAction)}
               aria-label={hideBtnLabel}
+              // Note: To Show or Hide the particular lesson in the timetable.
               onClick={() => {
                 if (module.hiddenInTimetable) {
-                  props.showLessonInTimetable(semester, module.moduleCode);
+                  props.showLessonInTimetable(
+                    semester,
+                    module.moduleCode,
+                    getLessons(module, semester),
+                  );
                 } else {
-                  props.hideLessonInTimetable(semester, module.moduleCode);
+                  props.hideLessonInTimetable(
+                    semester,
+                    module.moduleCode,
+                    getLessons(module, semester),
+                  );
                 }
               }}
             >

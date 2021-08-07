@@ -1,10 +1,9 @@
-import { get, omit, values } from 'lodash';
+import { differenceWith, isEqual, get, omit, values } from 'lodash';
 import produce from 'immer';
 import { createMigrate } from 'redux-persist';
 
 import { PersistConfig } from 'storage/persistReducer';
-import { ModuleCode } from 'types/modules';
-import { ModuleLessonConfig, SemTimetableConfig } from 'types/timetables';
+import { ModuleLessonConfig, SemTimetableConfig, SimplifiedLesson } from 'types/timetables';
 import { ColorMapping, TimetablesState } from 'types/reducers';
 
 import config from 'config';
@@ -149,7 +148,7 @@ function semColors(state: ColorMapping = defaultSemColorMap, action: Actions): C
 }
 
 // Map of semester to list of hidden modules
-const defaultHiddenState: ModuleCode[] = [];
+const defaultHiddenState: SimplifiedLesson[] = [];
 function semHiddenModules(state = defaultHiddenState, action: Actions) {
   if (!action.payload) {
     return state;
@@ -157,10 +156,12 @@ function semHiddenModules(state = defaultHiddenState, action: Actions) {
 
   switch (action.type) {
     case HIDE_LESSON_IN_TIMETABLE:
-      return [action.payload.moduleCode, ...state];
+      return [...action.payload.lessons, ...state];
+    // Note: Ensures that the module is no longer hidden.
     case SHOW_LESSON_IN_TIMETABLE:
+      return differenceWith(state, action.payload.lessons, isEqual);
     case REMOVE_MODULE:
-      return state.filter((c) => c !== action.payload.moduleCode);
+      return state.filter((c) => c.moduleCode !== action.payload.moduleCode);
     default:
       return state;
   }
@@ -202,6 +203,7 @@ function timetables(
     case SHOW_LESSON_IN_TIMETABLE: {
       const { semester } = action.payload;
 
+      // Note: How derivation is made
       return produce(state, (draft) => {
         draft.lessons[semester] = semTimetable(draft.lessons[semester], action);
         draft.colors[semester] = semColors(state.colors[semester], action);

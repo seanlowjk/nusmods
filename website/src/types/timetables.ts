@@ -10,6 +10,11 @@ export type SemTimetableConfig = {
   [moduleCode: string]: ModuleLessonConfig;
 };
 
+export type SimplifiedLesson = {
+  moduleCode: ModuleCode;
+  lessonType: LessonType;
+};
+
 //  ModuleLessonConfigWithLessons is a mapping of lessonType to an array of Lessons for a module.
 export type Lesson = RawLesson & {
   moduleCode: ModuleCode;
