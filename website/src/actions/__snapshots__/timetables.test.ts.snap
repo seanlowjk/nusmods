@@ -30,6 +30,12 @@ Array [
 exports[`hide/show timetable modules should dispatch a module code for hiding 1`] = `
 Object {
   "payload": Object {
+    "lessons": Array [
+      Object {
+        "lessonType": "Lecture",
+        "moduleCode": "CS1010",
+      },
+    ],
     "moduleCode": "CS1010",
     "semester": 1,
   },
@@ -40,6 +46,12 @@ Object {
 exports[`hide/show timetable modules should dispatch a module code for showing 1`] = `
 Object {
   "payload": Object {
+    "lessons": Array [
+      Object {
+        "lessonType": "Lecture",
+        "moduleCode": "CS1020",
+      },
+    ],
     "moduleCode": "CS1020",
     "semester": 1,
   },

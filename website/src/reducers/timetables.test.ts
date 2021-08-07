@@ -76,24 +76,27 @@ describe('color reducers', () => {
 describe('hidden module reducer', () => {
   const withHiddenModules: TimetablesState = {
     ...initialState,
-    hidden: { [1]: ['CS1010S'], [2]: ['CS1010S'] },
+    hidden: { 
+      [1]: [{ moduleCode: 'CS1010S', lessonType: 'Lecture '}], 
+      [2]: [{ moduleCode: 'CS1010S', lessonType: 'Lecture '}] },
   };
 
   test('should update hidden modules', () => {
-    expect(reducer(initialState, hideLessonInTimetable(1, 'CS3216'))).toHaveProperty('hidden.1', [
-      'CS3216',
+    expect(reducer(initialState, hideLessonInTimetable(1, 'CS3216', [{ moduleCode: 'CS3216', lessonType: 'Lecture '}])))
+    .toHaveProperty('hidden.1', [
+      { moduleCode: 'CS3216', lessonType: 'Lecture '},
     ]);
 
-    expect(reducer(initialState, showLessonInTimetable(1, 'CS1010S'))).toMatchObject({
+    expect(reducer(initialState, showLessonInTimetable(1, 'CS1010S', [{ moduleCode: 'CS1010S', lessonType: 'Lecture '}]))).toMatchObject({
       hidden: {
         [1]: [],
       },
     });
 
-    expect(reducer(withHiddenModules, showLessonInTimetable(1, 'CS1010S'))).toMatchObject({
+    expect(reducer(withHiddenModules, showLessonInTimetable(1, 'CS1010S', [{ moduleCode: 'CS1010S', lessonType: 'Lecture '}]))).toMatchObject({
       hidden: {
         [1]: [],
-        [2]: ['CS1010S'],
+        [2]: [{ moduleCode: 'CS1010S', lessonType: 'Lecture '}],
       },
     });
   });
@@ -103,14 +106,14 @@ describe('hidden module reducer', () => {
       reducer(
         {
           ...initialState,
-          hidden: { [1]: ['CS1010S'], [2]: ['CS1010S'] },
+          hidden: { [1]: [{ moduleCode: 'CS1010S', lessonType: 'Lecture '}], [2]: [{ moduleCode: 'CS1010S', lessonType: 'Lecture '}] },
         },
         removeModule(1, 'CS1010S'),
       ),
     ).toMatchObject({
       hidden: {
         [1]: [],
-        [2]: ['CS1010S'],
+        [2]: [{ moduleCode: 'CS1010S', lessonType: 'Lecture '}],
       },
     });
   });
@@ -203,7 +206,7 @@ describe('stateReconciler', () => {
       },
     },
     hidden: {
-      [1]: ['CS1010S'],
+      [1]: [{ moduleCode: 'CS1010S', lessonType: 'Lecture '}], 
     },
     academicYear: config.academicYear,
     archive: oldArchive,

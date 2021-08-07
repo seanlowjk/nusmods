@@ -1,5 +1,5 @@
 import { ModuleCode, Semester } from 'types/modules';
-import { SemTimetableConfig, Lesson } from 'types/timetables';
+import { SemTimetableConfig, Lesson, SimplifiedLesson } from 'types/timetables';
 
 import lessons from '__mocks__/lessons-array.json';
 import { CS1010S, CS3216 } from '__mocks__/modules';
@@ -120,12 +120,20 @@ describe('hide/show timetable modules', () => {
 
   test('should dispatch a module code for hiding', () => {
     const moduleCode: ModuleCode = 'CS1010';
-    expect(actions.hideLessonInTimetable(semester, moduleCode)).toMatchSnapshot();
+    const lessons: SimplifiedLesson[] = [{
+      lessonType: "Lecture", 
+      moduleCode: "CS1010", 
+    }];
+    expect(actions.hideLessonInTimetable(semester, moduleCode, lessons)).toMatchSnapshot();
   });
 
   test('should dispatch a module code for showing', () => {
     const moduleCode: ModuleCode = 'CS1020';
-    expect(actions.showLessonInTimetable(semester, moduleCode)).toMatchSnapshot();
+    const lessons: SimplifiedLesson[] = [{
+      lessonType: "Lecture", 
+      moduleCode: "CS1020", 
+    }];
+    expect(actions.showLessonInTimetable(semester, moduleCode, lessons)).toMatchSnapshot();
   });
 });
 
