@@ -3,12 +3,14 @@
 .moduleHidder {
   .moduleHide {
     flex: 0 1 auto;
-    border: 1px;
     text-transform: uppercase; 
   }
 
   .moduleAction {
     flex: 0 1 auto;
+    border-left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
     text-transform: uppercase;
 
     > .actionIcon {
@@ -22,7 +24,6 @@
   }
 
   .dropdownMenu {
-    left: 50%; 
     width: 5rem;
     min-width: 5rem; 
     text-align: center; 

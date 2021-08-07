@@ -44,7 +44,7 @@ const ModuleHidder = memo<Props>((props) => {
       return;
     }
 
-    props.toggleLessonHide(code, lessons, shouldHide(simplifiedLessons));
+    props.toggleLessonHide(code, simplifiedLessons, shouldHide(simplifiedLessons));
   };
 
   const getHideAllLessonsLabel = `${
