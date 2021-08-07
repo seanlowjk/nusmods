@@ -81,7 +81,8 @@ export const TimetableModulesTableComponent: React.FC<Props> = (props) => {
                 moduleCode={module.moduleCode}
                 semester={semester}
                 lessons={getLessons(module, semester)}
-                toggleHideOption={toggleHideOption}
+                toggleLessonHide={toggleLessonHide}
+                isLessonHiddenInTimetable={props.isLessonHiddenInTimetable}
               />
             </div>
           </Tooltip>
@@ -90,13 +91,15 @@ export const TimetableModulesTableComponent: React.FC<Props> = (props) => {
     );
   };
 
-  const toggleHideOption = (lesson: SimplifiedLesson) => {
-    const isHidden: boolean = props.isLessonHiddenInTimetable(lesson);
-
-    if (isHidden) {
-      props.showLessonInTimetable(semester, lesson.moduleCode, [lesson]);
+  const toggleLessonHide = (
+    moduleCode: ModuleCode,
+    lessons: SimplifiedLesson[],
+    shoildHide: boolean,
+  ) => {
+    if (shoildHide) {
+      props.hideLessonInTimetable(semester, moduleCode, lessons);
     } else {
-      props.hideLessonInTimetable(semester, lesson.moduleCode, [lesson]);
+      props.showLessonInTimetable(semester, moduleCode, lessons);
     }
   };
 
