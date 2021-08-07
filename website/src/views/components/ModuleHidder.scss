@@ -1,0 +1,55 @@
+@import '~styles/utils/modules-entry';
+
+.moduleHidder {
+  .moduleHide {
+    flex: 0 1 auto;
+    border: 1px;
+    text-transform: uppercase; 
+  }
+
+  .moduleAction {
+    flex: 0 1 auto;
+    text-transform: uppercase;
+
+    > .actionIcon {
+      margin: 0;
+    }
+
+    @include media-breakpoint-up(md) {
+      padding: 0.5rem;
+      border: 0;
+    }
+  }
+
+  .dropdownMenu {
+    left: 50%; 
+    width: 5rem;
+    min-width: 5rem; 
+    text-align: center; 
+  
+    svg {
+      margin-right: 0.2rem;
+      vertical-align: middle;
+    }
+  
+    @include media-breakpoint-down(xs) {
+      width: auto;
+    }
+  
+    @include media-breakpoint-up(md) {
+      font-size: $font-size-sm;
+    }
+  
+    @include media-breakpoint-only(md) {
+      @include vertical-mode {
+        right: 0;
+        left: auto;
+      }
+    }
+  }
+}
+
+.actionIcon {
+  composes: svg-small from global;
+}
+

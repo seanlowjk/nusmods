@@ -12,7 +12,7 @@ import { State as StoreState } from 'types/state';
 import { ModuleTableOrder } from 'types/reducers';
 
 import ColorPicker from 'views/components/ColorPicker';
-import { Eye, EyeOff, Trash } from 'react-feather';
+import { Trash } from 'react-feather';
 import {
   hideLessonInTimetable,
   selectModuleColor,
@@ -58,7 +58,7 @@ export type Props = {
 
 export const TimetableModulesTableComponent: React.FC<Props> = (props) => {
   const renderModuleActions = (module: ModuleWithColor) => {
-    const hideBtnLabel = `${module.hiddenInTimetable ? 'Show' : 'Hide'} ${module.moduleCode}`;
+    const hideBtnLabel = `Show / Hide ${module.moduleCode} Lessons`;
     const removeBtnLabel = `Remove ${module.moduleCode} from timetable`;
     const { semester } = props;
 
@@ -76,40 +76,15 @@ export const TimetableModulesTableComponent: React.FC<Props> = (props) => {
             </button>
           </Tooltip>
           <Tooltip content={hideBtnLabel} touch="hold">
-            <button
-              type="button"
-              className={classnames('btn btn-outline-secondary btn-svg', styles.moduleAction)}
-              aria-label={hideBtnLabel}
-              // Note: To Show or Hide the particular lesson in the timetable.
-              onClick={() => {
-                if (module.hiddenInTimetable) {
-                  props.showLessonInTimetable(
-                    semester,
-                    module.moduleCode,
-                    getLessons(module, semester),
-                  );
-                } else {
-                  props.hideLessonInTimetable(
-                    semester,
-                    module.moduleCode,
-                    getLessons(module, semester),
-                  );
-                }
-              }}
-            >
-              {module.hiddenInTimetable ? (
-                <Eye className={styles.actionIcon} />
-              ) : (
-                <EyeOff className={styles.actionIcon} />
-              )}
-            </button>
+            <div>
+              <ModuleHidder
+                moduleCode={module.moduleCode}
+                semester={semester}
+                lessons={getLessons(module, semester)}
+                toggleHideOption={toggleHideOption}
+              />
+            </div>
           </Tooltip>
-          <ModuleHidder
-            moduleCode={module.moduleCode}
-            semester={semester}
-            lessons={getLessons(module, semester)}
-            toggleHideOption={toggleHideOption}
-          />
         </div>
       </div>
     );

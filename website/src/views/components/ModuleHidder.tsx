@@ -3,9 +3,10 @@ import classnames from 'classnames';
 import Downshift, { ChildrenFunction } from 'downshift';
 
 import { SimplifiedLesson } from 'types/timetables';
-
+import { EyeOff } from 'react-feather';
 import { ModuleCode, Semester } from 'types/modules';
-import styles from './ColorPicker.scss';
+import { LESSON_TYPE_ABBREV } from 'utils/timetables';
+import styles from './ModuleHidder.scss';
 
 type Props = {
   moduleCode: ModuleCode;
@@ -29,25 +30,33 @@ const ModuleHidder = memo<Props>((props) => {
     const { moduleCode, lessons } = props;
 
     return (
-      <div>
+      <div className={classnames(styles.moduleHidder)}>
         <button
           type="button"
           {...getToggleButtonProps({
             title: moduleCode,
           })}
-          className={classnames('btn btn-block hoverable')}
+          className={classnames('btn btn-outline-secondary btn-svg', styles.moduleAction)}
         >
-          A
+          <EyeOff className={styles.actionIcon} />
         </button>
         <div
-          className={classnames(styles.palette, { [styles.isClosed]: !isOpen })}
+          className={classnames('dropdown-menu', styles.dropdownMenu, { show: isOpen })}
           {...getMenuProps()}
         >
-          {lessons.map((lesson: SimplifiedLesson) => (
-            <button type="button" {...getItemProps({ item: lesson })} key={lesson.lessonType}>
-              {lesson.lessonType}
-            </button>
-          ))}
+          <div className="btn-group-vertical">
+            {lessons.map((lesson: SimplifiedLesson) => (
+              <button
+                className={classnames('btn btn-outline-secondary btn-svg', styles.moduleHide)}
+                style={{ textDecoration: 'line-through' }}
+                type="button"
+                {...getItemProps({ item: lesson })}
+                key={lesson.lessonType}
+              >
+                {LESSON_TYPE_ABBREV[lesson.lessonType]}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     );
