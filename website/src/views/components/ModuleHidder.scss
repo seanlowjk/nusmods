@@ -4,6 +4,11 @@
   .moduleHide {
     flex: 0 1 auto;
     text-transform: uppercase; 
+
+    @include media-breakpoint-up(md) {
+      padding: 0.5rem;
+      border: 0;
+    }
   }
 
   .moduleAction {
